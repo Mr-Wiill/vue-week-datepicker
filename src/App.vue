@@ -1,18 +1,28 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <Datepicker :time="time" @change="changeDate"/>
+    <div class="time">{{time}}</div>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import Datepicker from './components/Datepicker.vue'
 
 export default {
   name: 'app',
   components: {
-    HelloWorld
-  }
+    Datepicker
+  },
+  data() {
+    return {
+      time: '2019-07-17'
+    }
+  },
+  methods: {
+    changeDate(val){
+      this.time = val
+    }
+  },
 }
 </script>
 
@@ -23,6 +33,9 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+}
+.time{
+  line-height: 10rem;
+  color: red;
 }
 </style>
