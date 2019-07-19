@@ -26,7 +26,7 @@ export default {
   data() {
     return {
       time: '20190719',
-      format: 'yyyy年mm月dd日'
+      format: 'yyyy/mm/dd'
     }
   },
   methods: {
@@ -35,11 +35,11 @@ export default {
       this.time = val
     },
     handle(type){
-      let result = {
+      const result = {
         1: '2020-02-20',
         2: '2020/02/20',
         3: '2020年02月20日',
-        4:'20200220'
+        4: '20200220'
       }
       this.time = result[type]
     }

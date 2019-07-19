@@ -15,8 +15,8 @@
                 />
             </van-popup>
         </div>
-        <!-- 星期 -->
         <div class="date-list">
+            <!-- 星期 -->
             <ul class="weekdays">
                 <li>日</li>
                 <li>一</li>
@@ -25,22 +25,22 @@
                 <li>四</li>
                 <li>五</li>
                 <li>六</li>
-                </ul>
+            </ul>
             <!-- 日期 -->
             <ul class="days">
                 <template v-for="(day, index) in days">
-                <li
-                    v-if="day.getMonth()+1 == currentMonth"
-                    :key="index"
-                    :class="{'is-active':day.getDate()==selectedDay}"
-                    @click="pick(day)"
-                >{{day.getDate()}}</li>
-                <li class="other-month"
-                    v-else
-                    :key="index"
-                    :class="{'is-active':day.getDate()==selectedDay}"
-                    @click="pick(day)"
-                >{{day.getDate()}}</li>
+                    <li
+                        v-if="day.getMonth()+1 == currentMonth"
+                        :key="index"
+                        :class="{'is-active':day.getDate()===selectedDay}"
+                        @click="pick(day)"
+                    >{{day.getDate()}}</li>
+                    <li class="other-month"
+                        v-else
+                        :key="index"
+                        :class="{'is-active':day.getDate()===selectedDay}"
+                        @click="pick(day)"
+                    >{{day.getDate()}}</li>
                 </template>
             </ul>
             <span class="pre-btn" @click="weekPre"> <van-icon name="arrow-left" size="1.7rem" /> </span>
@@ -50,7 +50,7 @@
 </template>
 
 <script>
-    import 'vant/lib/index.css';
+    import 'vant/lib/index.css'; 
     import { Icon, Popup, DatetimePicker } from 'vant';
     import Vue from 'vue';
     Vue.use(Icon)
@@ -74,13 +74,13 @@
                 currentDay: 1,        // 日期
                 currentWeek: 1,       // 星期
                 days: [],
-                selectedDay: this.currentDay,
-                // activeDay: 1,
+                selectedDay: 1,
                 pickerTime: new Date(),
                 isVisiblePicker: false
             };
         },
         mounted() {
+            // console.log(this.selectedDay)
             this.initData(this.initFormat(this.time));
         },
         computed: {
@@ -108,7 +108,6 @@
             // 选择日期
             pick(date) {
                 let d = new Date(date);
-                // this.selectedDay = this.activeDay = d.getDate();
                 this.selectedDay = d.getDate();
                 this.$emit(
                     "change",
@@ -118,7 +117,7 @@
 
             // 上个星期
             weekPre() {
-                console.log(this.selectedDay)
+                // console.log(this.selectedDay)
                 const d = this.days[0];
                 d.setDate(d.getDate() - 6);
                 this.initData(d);
@@ -127,7 +126,7 @@
 
             // 下个星期
             weekNext() {
-                console.log(this.selectedDay)
+                // console.log(this.selectedDay,this.currentMonth)
                 const d = this.days[6];
                 d.setDate(d.getDate() + 6);
                 this.initData(d);
@@ -137,7 +136,7 @@
             // 设置选中
             setActive() {
                 let isCurrent = this.currentMonth === new Date().getMonth() + 1;
-                console.log(isCurrent)
+                // console.log(isCurrent)
                 isCurrent ? this.selectedDay = "" : this.selectedDay = 1
             },
 
@@ -161,8 +160,7 @@
             initData(cur) {
                 let date = "";
                 cur ? date = new Date(cur) : date = new Date();
-                // this.selectedDay = this.activeDay = this.currentDay = date.getDate();    
-                this.selectedDay = this.currentDay = date.getDate();   
+                this.currentDay = date.getDate();   
                 this.currentYear = date.getFullYear();          // 当前年份
                 this.currentMonth = date.getMonth() + 1;        // 当前月份
                 this.currentWeek = date.getDay();               // 1...6,0  // 星期几
@@ -201,18 +199,23 @@
             setFormat(y, m, d){
                 const r1 = /^(Y{4})-(M{2})-(D{2})$/gi;              // YYYY-MM-DD（默认）
                 const r2 = /^(Y{4})\/(M{2})\/(D{2})$/gi;            // YYYY/MM/DD
-                const r3 = /^(Y{4})年(M{2})月(D{2})日$/gi;          // YYYY年MM月DD日
+                const r3 = /^(Y{4})[\u4e00-\u9fa5](M{2})[\u4e00-\u9fa5](D{2})[\u4e00-\u9fa5]$/gi;          // YYYY年MM月DD日
                 const r4 = /^(Y{4})(M{2})(D{2})$/gi;                // YYYYMMDD
+                console.log(r3.test(this.format), `${y}年${m}月${d}日`,3333)
                 if (!this.format || r1.test(this.format)) {
+                    console.log(1)
                     return `${y}-${m}-${d}`;          
                 } 
                 else if (r2.test(this.format)) {
+                    console.log(2)
                     return `${y}/${m}/${d}`;            
                 }
                 else if (r3.test(this.format)) {
+                    console.log(3)
                     return  `${y}年${m}月${d}日`;            
                 }
                 else if (r4.test(this.format)) {
+                    console.log(4)
                     return `${y}${m}${d}`;     
                 }
                 else {
