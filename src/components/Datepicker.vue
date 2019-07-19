@@ -2,7 +2,7 @@
     <div class="datepicker">
         <!-- 年份 月份 -->
         <div class="datepicker-header">
-            <div class="picker-btn" @click="pickerHandle">
+            <div class="picker-btn" @click="isVisiblePicker = true">
                 {{currentYear}}年{{selectedMonth}}月
             </div>
             <span class="today" @click="today">返回今日</span>
@@ -30,14 +30,13 @@
             <ul class="days">
                 <template v-for="(day, index) in days">
                 <li
-                    @click="pick(day)"
                     v-if="day.getMonth()+1 == currentMonth"
                     :key="index"
                     :class="{'is-active':day.getDate()==selectedDay}"
+                    @click="pick(day)"
                 >{{day.getDate()}}</li>
-                <li
+                <li class="other-month"
                     v-else
-                    class="other-month"
                     :key="index"
                     :class="{'is-active':day.getDate()==selectedDay}"
                     @click="pick(day)"
@@ -60,7 +59,14 @@
 
     export default {
         name: "weekDatePicker",
-        props: ["time"],
+        props: {
+            time:{
+                default: ''
+            },
+            format: {
+                type: String    // 可选项：YYYY-MM-DD（默认）, YYYY/MM/DD, YYYY年MM月DD日, YYYYMMDD
+            }
+        },
         data() {
             return {
                 currentYear: 1970,    // 年份
@@ -69,13 +75,13 @@
                 currentWeek: 1,       // 星期
                 days: [],
                 selectedDay: this.currentDay,
-                activeDay: 1,
+                // activeDay: 1,
                 pickerTime: new Date(),
                 isVisiblePicker: false
             };
         },
         mounted() {
-            this.pick(this.time);
+            this.initData(this.initFormat(this.time));
         },
         computed: {
             selectedMonth(){
@@ -84,13 +90,13 @@
         },
         watch: {
             time() {
-                this.pick(this.time);
+                this.initData(this.initFormat(this.time))
             }
         },
         methods: {
-            // 日期选择确认
+            // 选择年/月确认
             confirmPicker(){
-                 this.pick(this.pickerTime)
+                this.pick(this.pickerTime)
                 this.isVisiblePicker = false
             },
 
@@ -99,33 +105,69 @@
                 this.pick(new Date());
             },
 
-            // 当前选择日期
+            // 选择日期
             pick(date) {
-                const d = new Date(date);
-                this.initData(d);
-                this.selectedDay = this.activeDay = d.getDate();
+                let d = new Date(date);
+                // this.selectedDay = this.activeDay = d.getDate();
+                this.selectedDay = d.getDate();
                 this.$emit(
                     "change",
                     this.formatDate(d.getFullYear(), d.getMonth() + 1, d.getDate())
                 );
             },
 
-            // 选择日期
-            pickerHandle() {
-                // this.$emit("picker");
-                this.isVisiblePicker = true
+            // 上个星期
+            weekPre() {
+                console.log(this.selectedDay)
+                const d = this.days[0];
+                d.setDate(d.getDate() - 6);
+                this.initData(d);
+                // this.setActive();
+            },
+
+            // 下个星期
+            weekNext() {
+                console.log(this.selectedDay)
+                const d = this.days[6];
+                d.setDate(d.getDate() + 6);
+                this.initData(d);
+                // this.setActive();
+            },
+
+            // 设置选中
+            setActive() {
+                let isCurrent = this.currentMonth === new Date().getMonth() + 1;
+                console.log(isCurrent)
+                isCurrent ? this.selectedDay = "" : this.selectedDay = 1
+            },
+
+            // 初始化日期格式
+            initFormat(time){
+                const r1 = /^(\d{4})\/(\d{2})\/(\d{2})$/gi;         // YYYY/MM/DD
+                const r2 = /^(\d{4})(\d{2})(\d{2})$/gi;             // YYYYMMDD
+                if (!time) return new Date()
+                if (typeof time === 'object' || r1.test(time)) {
+                    return time
+                } 
+                else if (r2.test(time)){
+                    return `${time.substr(0,4)}/${time.substr(4,2)}/${time.substr(6)}`  
+                }
+                else {            // 非YYYY/MM/DD格式的日期，就转换成YYYY/MM/DD
+                    return `${time.substr(0,4)}/${time.substr(5,2)}/${time.substr(8)}`  
+                }
             },
 
             // 初始化
             initData(cur) {
                 let date = "";
-                cur ? (date = new Date(cur)) : (date = new Date());
-                this.currentDay = date.getDate();               // 今日日期 几号
+                cur ? date = new Date(cur) : date = new Date();
+                // this.selectedDay = this.activeDay = this.currentDay = date.getDate();    
+                this.selectedDay = this.currentDay = date.getDate();   
                 this.currentYear = date.getFullYear();          // 当前年份
                 this.currentMonth = date.getMonth() + 1;        // 当前月份
                 this.currentWeek = date.getDay();               // 1...6,0  // 星期几
 
-                const str = this.formatDate(this.currentYear, this.currentMonth, this.currentDay);      // 今日日期 年-月-日
+                const str = this.formatDate(this.currentYear, this.currentMonth, this.currentDay, 'init');  
                 this.days.length = 0;
 
                 // 获取本周日期，周日排第一个
@@ -142,35 +184,41 @@
             },
 
             // 格式化
-            formatDate(year, month, day) {
-                const y = year;
+            formatDate(year, month, day, init) {
+                let y = year;
                 let m = month;
-                if (m < 10) m = `0${m}`;
                 let d = day;
+                if (m < 10) m = `0${m}`;
                 if (d < 10) d = `0${d}`;
-                return `${y}-${m}-${d}`;
+                if (init) {
+                    return `${y}/${m}/${d}`;
+                } else {
+                    return this.setFormat(y, m, d)
+                }
             },
 
-            // 上个星期
-            weekPre() {
-                const d = this.days[0];
-                d.setDate(d.getDate() - 6);
-                this.initData(d);
-                this.setActive();
-            },
-
-            // 下个星期
-            weekNext() {
-                const d = this.days[6];
-                d.setDate(d.getDate() + 6);
-                this.initData(d);
-                this.setActive();
-            },
-
-            // 设置选中
-            setActive() {
-                let isCurrent = this.currentMonth == new Date().getMonth() + 1;
-                isCurrent ? (this.selectedDay = this.activeDay) : (this.selectedDay = "");
+            // 设置日期格式
+            setFormat(y, m, d){
+                const r1 = /^(Y{4})-(M{2})-(D{2})$/gi;              // YYYY-MM-DD（默认）
+                const r2 = /^(Y{4})\/(M{2})\/(D{2})$/gi;            // YYYY/MM/DD
+                const r3 = /^(Y{4})年(M{2})月(D{2})日$/gi;          // YYYY年MM月DD日
+                const r4 = /^(Y{4})(M{2})(D{2})$/gi;                // YYYYMMDD
+                if (!this.format || r1.test(this.format)) {
+                    return `${y}-${m}-${d}`;          
+                } 
+                else if (r2.test(this.format)) {
+                    return `${y}/${m}/${d}`;            
+                }
+                else if (r3.test(this.format)) {
+                    return  `${y}年${m}月${d}日`;            
+                }
+                else if (r4.test(this.format)) {
+                    return `${y}${m}${d}`;     
+                }
+                else {
+                    alert('日期格式不支持！')
+                    return
+                }
             }
         }
     };
