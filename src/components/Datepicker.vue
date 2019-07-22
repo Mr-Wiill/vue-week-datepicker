@@ -30,15 +30,15 @@
             <ul class="days">
                 <template v-for="(day, index) in days">
                     <li
-                        v-if="day.getMonth()+1 == currentMonth"
+                        v-if="day.getMonth()+1 === currentMonth"
                         :key="index"
-                        :class="{'is-active':day.getDate()===selectedDay}"
+                        :class="{'is-active':day.getTime()==new Date(selectedTime).getTime()}"
                         @click="pick(day)"
                     >{{day.getDate()}}</li>
                     <li class="other-month"
                         v-else
                         :key="index"
-                        :class="{'is-active':day.getDate()===selectedDay}"
+                        :class="{'is-active':day.getTime()==new Date(selectedTime).getTime()}"
                         @click="pick(day)"
                     >{{day.getDate()}}</li>
                 </template>
@@ -73,15 +73,17 @@
                 currentMonth: 1,      // 月份
                 currentDay: 1,        // 日期
                 currentWeek: 1,       // 星期
+                selectedDay: 1,    
+                selectedTime: '',   
                 days: [],
-                selectedDay: 1,
                 pickerTime: new Date(),
                 isVisiblePicker: false
             };
         },
         mounted() {
-            // console.log(this.selectedDay)
-            this.initData(this.initFormat(this.time));
+            // this.selectedTime = new Date(this.initFormat(this.time))
+            this.selectedTime = this.initFormat(this.time)
+            this.initData(this.selectedTime);
         },
         computed: {
             selectedMonth(){
@@ -90,7 +92,10 @@
         },
         watch: {
             time() {
-                this.initData(this.initFormat(this.time))
+                // this.selectedTime = new Date(this.initFormat(this.time))
+                this.selectedTime = this.initFormat(this.time)
+                this.initData(this.selectedTime);
+                console.log(this.selectedTime, 'watch')
             }
         },
         methods: {
@@ -102,61 +107,42 @@
 
             // 返回今日
             today() {
-                this.pick(new Date());
+                let d = new Date()
+                let now = new Date(this.formatDate(d.getFullYear(), d.getMonth()+1, d.getDate(), 'init'))
+                this.initData();
+                this.pick(now);
             },
 
             // 选择日期
             pick(date) {
+                // this.selectedTime = date
                 let d = new Date(date);
-                this.selectedDay = d.getDate();
+                this.selectedTime = this.formatDate(d.getFullYear(), d.getMonth() + 1, d.getDate(), 'init')
                 this.$emit(
                     "change",
                     this.formatDate(d.getFullYear(), d.getMonth() + 1, d.getDate())
                 );
+                console.log(this.days[6],this.selectedTime)
             },
 
             // 上个星期
             weekPre() {
-                // console.log(this.selectedDay)
-                const d = this.days[0];
+                let d = this.days[0];
                 d.setDate(d.getDate() - 6);
                 this.initData(d);
-                // this.setActive();
+                console.log(d, this.selectedTime)   
             },
 
             // 下个星期
             weekNext() {
-                // console.log(this.selectedDay,this.currentMonth)
-                const d = this.days[6];
+                let d = this.days[6];
+                console.log(d, this.selectedTime,1)
                 d.setDate(d.getDate() + 6);
+                console.log(d, this.selectedTime,2)
                 this.initData(d);
-                // this.setActive();
             },
 
-            // 设置选中
-            setActive() {
-                let isCurrent = this.currentMonth === new Date().getMonth() + 1;
-                // console.log(isCurrent)
-                isCurrent ? this.selectedDay = "" : this.selectedDay = 1
-            },
-
-            // 初始化日期格式
-            initFormat(time){
-                const r1 = /^(\d{4})\/(\d{2})\/(\d{2})$/gi;         // YYYY/MM/DD
-                const r2 = /^(\d{4})(\d{2})(\d{2})$/gi;             // YYYYMMDD
-                if (!time) return new Date()
-                if (typeof time === 'object' || r1.test(time)) {
-                    return time
-                } 
-                else if (r2.test(time)){
-                    return `${time.substr(0,4)}/${time.substr(4,2)}/${time.substr(6)}`  
-                }
-                else {            // 非YYYY/MM/DD格式的日期，就转换成YYYY/MM/DD
-                    return `${time.substr(0,4)}/${time.substr(5,2)}/${time.substr(8)}`  
-                }
-            },
-
-            // 初始化
+            // 初始化日期
             initData(cur) {
                 let date = "";
                 cur ? date = new Date(cur) : date = new Date();
@@ -181,6 +167,24 @@
                 }
             },
 
+            // 初始化日期格式
+            initFormat(time){
+                const r1 = /^(\d{4})\/(\d{2})\/(\d{2})$/gi;         // YYYY/MM/DD
+                const r2 = /^(\d{4})(\d{2})(\d{2})$/gi;             // YYYYMMDD
+                let d = new Date()
+                if (!time) return this.formatDate(d.getFullYear(), d.getMonth()+1, d.getDate(), 'init')
+                if (typeof time === 'object' || r1.test(time)) {
+                    return time
+                } 
+                // 非YYYY/MM/DD格式的日期，就转换成YYYY/MM/DD
+                else if (r2.test(time)){
+                    return `${time.substr(0,4)}/${time.substr(4,2)}/${time.substr(6)}`  
+                }
+                else {                      
+                    return `${time.substr(0,4)}/${time.substr(5,2)}/${time.substr(8,2)}`  
+                }
+            },
+
             // 格式化
             formatDate(year, month, day, init) {
                 let y = year;
@@ -201,21 +205,16 @@
                 const r2 = /^(Y{4})\/(M{2})\/(D{2})$/gi;            // YYYY/MM/DD
                 const r3 = /^(Y{4})[\u4e00-\u9fa5](M{2})[\u4e00-\u9fa5](D{2})[\u4e00-\u9fa5]$/gi;          // YYYY年MM月DD日
                 const r4 = /^(Y{4})(M{2})(D{2})$/gi;                // YYYYMMDD
-                console.log(r3.test(this.format), `${y}年${m}月${d}日`,3333)
                 if (!this.format || r1.test(this.format)) {
-                    console.log(1)
                     return `${y}-${m}-${d}`;          
                 } 
                 else if (r2.test(this.format)) {
-                    console.log(2)
                     return `${y}/${m}/${d}`;            
                 }
                 else if (r3.test(this.format)) {
-                    console.log(3)
                     return  `${y}年${m}月${d}日`;            
                 }
                 else if (r4.test(this.format)) {
-                    console.log(4)
                     return `${y}${m}${d}`;     
                 }
                 else {

@@ -2,16 +2,15 @@
   <div id="app">
     <!-- 调用日期选择器组件 -->
     <Datepicker 
-      :time="time" 
       :format="format" 
       @change="changeDate"
     />
     <div class="time">{{time}}</div>
     <div class="time">基于vant-ui的移动端日期选择器</div>
-    <p><button @click="handle(1)">2020-02-20</button></p>
-    <p><button @click="handle(2)">2020/02/20</button></p>
-    <p><button @click="handle(3)">2020年02月20日</button></p>
-    <p><button @click="handle(4)">20200220</button></p>
+    <p><button @click="handle(1)">YYYY-MM-DD</button></p>
+    <p><button @click="handle(2)">YYYY/MM/DD</button></p>
+    <p><button @click="handle(3)">YYYY年MM月DD日</button></p>
+    <p><button @click="handle(4)">YYYYMMDD</button></p>
   </div>
 </template>
 
@@ -30,18 +29,18 @@ export default {
     }
   },
   methods: {
-    // 接收选值
+    // 改变选值
     changeDate(val){
       this.time = val
     },
     handle(type){
       const result = {
-        1: '2020-02-20',
-        2: '2020/02/20',
-        3: '2020年02月20日',
-        4: '20200220'
+        1: 'YYYY-MM-DD',
+        2: 'YYYY/MM/DD',
+        3: 'YYYY年MM月DD日',
+        4: 'YYYYMMDD'
       }
-      this.time = result[type]
+      this.format = result[type]
     }
   },
 }
