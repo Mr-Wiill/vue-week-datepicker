@@ -81,6 +81,7 @@
             };
         },
         mounted() {
+            // this.selectedTime = new Date(this.initFormat(this.time))
             this.selectedTime = this.initFormat(this.time)
             this.initData(this.selectedTime);
         },
@@ -91,8 +92,10 @@
         },
         watch: {
             time() {
+                // this.selectedTime = new Date(this.initFormat(this.time))
                 this.selectedTime = this.initFormat(this.time)
                 this.initData(this.selectedTime);
+                console.log(this.selectedTime, 'watch')
             }
         },
         methods: {
@@ -105,19 +108,21 @@
             // 返回今日
             today() {
                 let d = new Date()
-                let now = new Date(this.formatDate(d))
+                let now = new Date(this.formatDate(d.getFullYear(), d.getMonth()+1, d.getDate(), 'init'))
                 this.initData();
                 this.pick(now);
             },
 
             // 选择日期
             pick(date) {
+                // this.selectedTime = date
                 let d = new Date(date);
-                this.selectedTime = this.formatDate(d)
+                this.selectedTime = this.formatDate(d.getFullYear(), d.getMonth() + 1, d.getDate(), 'init')
                 this.$emit(
                     "change",
-                    this.formatDate(d,'set')
+                    this.formatDate(d.getFullYear(), d.getMonth() + 1, d.getDate())
                 );
+                console.log(this.days[6],this.selectedTime)
             },
 
             // 上个星期
@@ -125,12 +130,15 @@
                 let d = this.days[0];
                 d.setDate(d.getDate() - 6);
                 this.initData(d);
+                console.log(d, this.selectedTime)   
             },
 
             // 下个星期
             weekNext() {
                 let d = this.days[6];
+                console.log(d, this.selectedTime,1)
                 d.setDate(d.getDate() + 6);
+                console.log(d, this.selectedTime,2)
                 this.initData(d);
             },
 
@@ -142,8 +150,10 @@
                 this.currentYear = date.getFullYear();          // 当前年份
                 this.currentMonth = date.getMonth() + 1;        // 当前月份
                 this.currentWeek = date.getDay();               // 1...6,0  // 星期几
+
+                const str = this.formatDate(this.currentYear, this.currentMonth, this.currentDay, 'init');  
                 this.days.length = 0;
-                const str = this.formatDate(date);  
+
                 // 获取本周日期，周日排第一个
                 for (let i = this.currentWeek; i >= 0; i -= 1) {
                     const d = new Date(str);        // 当日之前的日期
@@ -162,7 +172,7 @@
                 const r1 = /^(\d{4})\/(\d{2})\/(\d{2})$/gi;         // YYYY/MM/DD
                 const r2 = /^(\d{4})(\d{2})(\d{2})$/gi;             // YYYYMMDD
                 let d = new Date()
-                if (!time) return this.formatDate(d)
+                if (!time) return this.formatDate(d.getFullYear(), d.getMonth()+1, d.getDate(), 'init')
                 if (typeof time === 'object' || r1.test(time)) {
                     return time
                 } 
@@ -176,42 +186,25 @@
             },
 
             // 格式化
-            formatDate(time, type) {
-                const r1 = /^(Y{4})-(M{2})-(D{2})$/gi;              // YYYY-MM-DD（默认）
-                const r2 = /^(Y{4})\/(M{2})\/(D{2})$/gi;            // YYYY/MM/DD
-                const r3 = /^(Y{4})[\u4e00-\u9fa5](M{2})[\u4e00-\u9fa5](D{2})[\u4e00-\u9fa5]$/gi;    // YYYY年MM月DD日
-                const r4 = /^(Y{4})(M{2})(D{2})$/gi;                // YYYYMMDD
-
-                let date = time ? new Date(time) : new Date()
-                let y = date.getFullYear();
-                let m = date.getMonth()+1;
-                let d = date.getDate();
+            formatDate(year, month, day, init) {
+                let y = year;
+                let m = month;
+                let d = day;
                 if (m < 10) m = `0${m}`;
                 if (d < 10) d = `0${d}`;
-
-                if (type==='init'){                 // 初始化日期格式为YYYY/MM/DD
-                    if (!time) return `${y}/${m}/${d}`;
-                    if (typeof time === 'object' || r1.test(time)) {
-                        return time
-                    } 
-                    // 非YYYY/MM/DD格式的日期，就转换成YYYY/MM/DD
-                    else if (r2.test(time)){
-                        return `${time.substr(0,4)}/${time.substr(4,2)}/${time.substr(6)}`  
-                    }
-                    else {                      
-                        return `${time.substr(0,4)}/${time.substr(5,2)}/${time.substr(8,2)}`  
-                    }
-                }   
-                else if (type==='set') {            // 设置日期格式为format格式
-                    return this.setFormat(y, m, d)
-                    
+                if (init) {
+                    return `${y}/${m}/${d}`;
                 } else {
-                    return `${y}/${m}/${d}`;        // YYYY/MM/DD
+                    return this.setFormat(y, m, d)
                 }
             },
 
             // 设置日期格式
             setFormat(y, m, d){
+                const r1 = /^(Y{4})-(M{2})-(D{2})$/gi;              // YYYY-MM-DD（默认）
+                const r2 = /^(Y{4})\/(M{2})\/(D{2})$/gi;            // YYYY/MM/DD
+                const r3 = /^(Y{4})[\u4e00-\u9fa5](M{2})[\u4e00-\u9fa5](D{2})[\u4e00-\u9fa5]$/gi;          // YYYY年MM月DD日
+                const r4 = /^(Y{4})(M{2})(D{2})$/gi;                // YYYYMMDD
                 if (!this.format || r1.test(this.format)) {
                     return `${y}-${m}-${d}`;          
                 } 
