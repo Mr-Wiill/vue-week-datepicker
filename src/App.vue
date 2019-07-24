@@ -2,6 +2,7 @@
   <div id="app">
     <!-- 调用日期选择器组件 -->
     <Datepicker 
+      :time="time"
       :format="format" 
       @change="changeDate"
     />
@@ -11,6 +12,7 @@
     <p><button @click="handle(2)">YYYY/MM/DD</button></p>
     <p><button @click="handle(3)">YYYY年MM月DD日</button></p>
     <p><button @click="handle(4)">YYYYMMDD</button></p>
+    <p><button @click="time='2020/07/25'">2020/07/25</button></p>
   </div>
 </template>
 
@@ -24,8 +26,8 @@ export default {
   },
   data() {
     return {
-      time: '20190719',
-      format: 'yyyy/mm/dd'
+      time: '',
+      format: 'yyyy-mm-dd'
     }
   },
   methods: {
@@ -55,7 +57,8 @@ export default {
   color: #2c3e50;
 }
 .time{
-  line-height: 8rem;
+  line-height: 5rem;
   font-size: 1.5rem;
+  margin-top: 1rem;
 }
 </style>
