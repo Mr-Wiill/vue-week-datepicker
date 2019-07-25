@@ -32,7 +32,7 @@ components: {
 <Datepicker :time="time" :format="format" @change="changeDate"/>
 ```
 
-#### API说明
+## API说明
 
 #### Props
 |参数|说明|类型|默认值|
@@ -42,7 +42,7 @@ components: {
 
 #### Events
 |事件名|说明|回调参数|
-|:---|---|---|---|
+|:---|---|---|
 |change|选择日期后触发的事件|当前日期|
 
 
