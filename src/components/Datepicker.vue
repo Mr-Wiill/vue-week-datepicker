@@ -64,7 +64,8 @@
                 default: ''
             },
             format: {
-                type: String    // 可选项：YYYY-MM-DD（默认）, YYYY/MM/DD, YYYY年MM月DD日, YYYYMMDD
+                type: String,    // 可选项：YYYY-MM-DD（默认）, YYYY/MM/DD, YYYY年MM月DD日, YYYYMMDD
+                default: 'YYYY-MM-DD'
             }
         },
         data() {
