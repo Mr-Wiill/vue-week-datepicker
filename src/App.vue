@@ -12,7 +12,7 @@
     <p><button @click="handle(2)">YYYY/MM/DD</button></p>
     <p><button @click="handle(3)">YYYY年MM月DD日</button></p>
     <p><button @click="handle(4)">YYYYMMDD</button></p>
-    <p><button @click="time='2020/07/25'">2020/07/25</button></p>
+    <!-- <p><button @click="time='2020/07/25'">2020/07/25</button></p> -->
   </div>
 </template>
 
