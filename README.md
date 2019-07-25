@@ -6,7 +6,7 @@
 
 ## 动图演示
 
-![image](https://github.com/KBeginner/vue-week-datepicker/blob/master/public/datepicker.gif)
+            ![image](https://github.com/KBeginner/vue-week-datepicker/blob/master/public/datepicker.gif)
 
 ## 快速开始
 
@@ -35,17 +35,17 @@ import Datepicker from './components/Datepicker.vue'      // 根据自身项目�
 
 ## 启动项目
 
-### 初始化
+#### 初始化
 ```
 npm install
 ```
 
-### 启动
+#### 启动
 ```
 npm run serve
 ```
 
-### 打包
+#### 打包
 ```
 npm run build
 ```
