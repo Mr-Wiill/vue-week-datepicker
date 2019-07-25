@@ -6,11 +6,11 @@
 
 ## 动图演示
 
-            ![image](https://github.com/KBeginner/vue-week-datepicker/blob/master/public/datepicker.gif)
+![image](https://github.com/KBeginner/vue-week-datepicker/blob/master/public/datepicker.gif)
 
 ## 快速开始
 
-#### 安装vant-ui
+#### 安装[vant-ui](https://youzan.github.io/vant/#/zh-CN/quickstart)
 ```
 npm i vant -S  // 通过 npm 安装
 yarn add vant  // 或者通过 yarn 安装
@@ -23,9 +23,9 @@ import Datepicker from './components/Datepicker.vue'      // 根据自身项目�
 
 #### 声明组件
 ```
-    components: {
-        Datepicker
-    }
+components: {
+    Datepicker
+}
 ```
 #### 调用组件
 ```
@@ -33,19 +33,20 @@ import Datepicker from './components/Datepicker.vue'      // 根据自身项目�
 ```
 
 
-## 启动项目
+## 启动该项目
 
 #### 初始化
 ```
 npm install
 ```
 
+#### 按照vant-ui
+```
+npm i vant -S       // 通过 npm 安装
+yarn add vant       // 或通过 yarn 安装
+```
+
 #### 启动
 ```
 npm run serve
-```
-
-#### 打包
-```
-npm run build
 ```
