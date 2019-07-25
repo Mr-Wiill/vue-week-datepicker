@@ -10,22 +10,30 @@
 
 ## 快速开始
 
-安装vant-ui
-`npm i vant -S`  // 通过 npm 安装
-`yarn add vant`  // 或者通过 yarn 安装
+#### 安装vant-ui
+```
+npm i vant -S  // 通过 npm 安装
+yarn add vant  // 或者通过 yarn 安装
+```
 
-引入组件
-`import Datepicker from './components/Datepicker.vue'`      // 根据自身项目路径进行修改
+#### 引入组件
+```
+import Datepicker from './components/Datepicker.vue'      // 根据自身项目路径进行修改
+```
 
-声明组件
-`
+#### 声明组件
+```
     components: {
         Datepicker
-    },
-`
-调用组件
-`<Datepicker :time="time" :format="format" @change="changeDate"/>`
+    }
+```
+#### 调用组件
+```
+<Datepicker :time="time" :format="format" @change="changeDate"/>
+```
 
+
+## 启动项目
 
 ### 初始化
 ```
