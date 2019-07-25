@@ -3,7 +3,7 @@
 `vue-week-datepicker`是使用vue开发的一个移动端周历日期选择器组件。
 
 * 灵活切换，容易上手
-* 四种日期格式共选择（YYYY-MM-DD, YYYY/MM/DD, YYYY年MM月DD日, YYYYMMMDDD）
+* 四种日期格式供选择（YYYY-MM-DD, YYYY/MM/DD, YYYY年MM月DD日, YYYYMMDD）
 * 一键返回今日快捷键
 
 ## 动图演示
