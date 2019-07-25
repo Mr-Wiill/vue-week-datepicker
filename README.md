@@ -18,7 +18,7 @@ yarn add vant  // 或者通过 yarn 安装
 
 #### 引入组件
 ```
-import Datepicker from './components/Datepicker.vue'      // 根据自身项目路径进行修改
+import Datepicker from './components/Datepicker.vue'      // 根据存放组件的位置自行修改
 ```
 
 #### 声明组件
@@ -32,6 +32,19 @@ components: {
 <Datepicker :time="time" :format="format" @change="changeDate"/>
 ```
 
+#### API说明
+
+#### Props
+|参数|说明|类型|默认值|
+|:---|---|---|---|
+|time|初始值|`String`|''|
+|format|日期格式，可选值为 `YYYY-MM-DD` `YYYY/MM/DD` `YYYY年MM月DD日` `YYYYMMDD`|`String`|`YYYY-MM-DD`|
+
+#### Events
+|事件名|说明|回调参数|
+|:---|---|---|---|
+|change|选择日期后触发的事件|当前日期|
+
 
 ## 启动该项目
 
@@ -40,7 +53,7 @@ components: {
 npm install
 ```
 
-#### 按照vant-ui
+#### 安装vant-ui
 ```
 npm i vant -S       // 通过 npm 安装
 yarn add vant       // 或通过 yarn 安装
