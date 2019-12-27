@@ -309,8 +309,9 @@
     }
     .days li {
         text-align: center;
-        padding: 0.3rem;
-        min-width: 1.4rem;
+        padding: 0.4rem;
+        width: 1.2rem;
+        height: 1.2rem;
     }
     .days li.is-active {
         background: #1989fa;
